@@ -4,22 +4,31 @@ from models import Base, Product, StoreSetting, Offer
 
 import os
 DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 if not DATABASE_URL:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DB_PATH = os.path.abspath(os.path.join(BASE_DIR, "blinds.db"))
     DATABASE_URL = f"sqlite:///{DB_PATH}"
 
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# Pass connect_args only if we are using SQLite
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
     db = SessionLocal()
     try:
-        # Enable WAL mode for SQLite to handle concurrent reads/writes from two applications safely
-        from sqlalchemy import text
-        db.execute(text("PRAGMA journal_mode=WAL;"))
+        # Enable WAL mode only for SQLite to handle concurrent reads/writes safely
+        if DATABASE_URL.startswith("sqlite"):
+            from sqlalchemy import text
+            db.execute(text("PRAGMA journal_mode=WAL;"))
         yield db
     finally:
         db.close()
