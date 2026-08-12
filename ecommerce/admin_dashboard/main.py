@@ -25,6 +25,7 @@ TEMPLATES_DIR = os.path.abspath(os.path.join(BASE_DIR, "templates"))
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+templates.env.globals["STOREFRONT_URL"] = os.getenv("STOREFRONT_URL", "https://ecommerce3-rxkq.onrender.com")
 
 # Initialize DB on startup
 @app.on_event("startup")
