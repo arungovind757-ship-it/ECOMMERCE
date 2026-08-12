@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AeroShield | Premium PVC Blinds{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Immediate theme preference initialization to avoid flash
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.05), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.05), transparent 40%),
+                        #f8fafc;
+            color: #0f172a;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        html.dark body {
+            background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.08), transparent 40%),
+                        #0b0f19;
+            color: #f1f5f9;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        html.dark .glass-card {
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .glow-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.25) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg) translateX(-100%);
+            transition: all 1s ease;
+        }
+        .glow-button:hover::after {
+            transform: skewX(-25deg) translateX(100%);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="flex flex-col text-slate-800 dark:text-slate-200">
+
+    <!-- Announcement Bar -->
+    {% if settings and settings.announcement_banner %}
+    <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 py-2.5 text-center text-xs font-extrabold text-white tracking-wide border-b border-violet-500/20 shadow-xl relative overflow-hidden flex items-center justify-center space-x-2">
+        <span class="inline-block animate-bounce text-sm">🎉</span>
+        <span>{{ settings.announcement_banner }}</span>
+    </div>
+    {% endif %}
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md transition-all duration-300">
+        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <span class="text-2xl font-extrabold font-outfit bg-clip-text text-transparent bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500 dark:from-violet-400 dark:via-fuchsia-400 dark:to-indigo-400">
+                    AeroShield
+                </span>
+                <span class="text-[10px] tracking-wider uppercase bg-violet-500/10 text-violet-600 dark:bg-violet-500/20 dark:text-violet-300 font-bold px-2 py-0.5 rounded border border-violet-500/20 dark:border-violet-500/30">
+                    PVC Blinds
+                </span>
+            </a>
+            
+            <nav class="flex items-center space-x-6">
+                <a href="/" class="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors duration-200 text-sm font-medium">Storefront</a>
+                
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 transition-all duration-200">
+                    <!-- Moon Icon -->
+                    <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <!-- Sun Icon -->
+                    <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-slate-900 bg-white/60 dark:bg-slate-950/60 py-10 mt-12 text-slate-500">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6 text-center md:text-left">
+            <div>
+                <h4 class="font-extrabold font-outfit text-slate-800 dark:text-slate-300 text-base">AeroShield PVC Blinds</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-500 mt-1.5 max-w-sm">Engineered for Strength, Cut for Perfection. Heavy-duty balcony and outdoor patio covers.</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-600 mt-3">Enterprise Factory Automation Module Active</p>
+            </div>
+            <div class="space-y-1.5 md:text-right text-xs">
+                <h5 class="font-bold text-slate-500 dark:text-slate-450 uppercase tracking-wider text-[10px]">Contact Factory & Showroom</h5>
+                {% if settings %}
+                <p class="text-slate-600 dark:text-slate-400">📞 Phone: <span class="text-slate-800 dark:text-slate-300 font-semibold">{{ settings.phone }}</span></p>
+                <p class="text-slate-600 dark:text-slate-400">✉️ Email: <span class="text-slate-800 dark:text-slate-300 font-semibold">{{ settings.email }}</span></p>
+                <p class="text-slate-600 dark:text-slate-400">📍 Address: <span class="text-slate-800 dark:text-slate-300 font-semibold">{{ settings.address }}</span></p>
+                <p class="text-slate-600 dark:text-slate-400">🕒 Hours: <span class="text-slate-800 dark:text-slate-300 font-semibold">{{ settings.working_hours }}</span></p>
+                {% else %}
+                <p class="text-slate-600 dark:text-slate-400">📞 Phone: <span class="text-slate-800 dark:text-slate-300 font-semibold">+91 98765 43210</span></p>
+                <p class="text-slate-600 dark:text-slate-400">✉️ Email: <span class="text-slate-800 dark:text-slate-300 font-semibold">sales@pvcblinds.com</span></p>
+                <p class="text-slate-600 dark:text-slate-400">📍 Address: <span class="text-slate-800 dark:text-slate-300 font-semibold">123 Blinds Factory Road, Bengaluru, KA 560001</span></p>
+                <p class="text-slate-600 dark:text-slate-400">🕒 Hours: <span class="text-slate-800 dark:text-slate-300 font-semibold">Mon - Sat: 9:00 AM - 7:00 PM</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-center text-[11px] text-slate-500 dark:text-slate-600 border-t border-slate-200/60 dark:border-slate-900/60 mt-8 pt-4">
+            © 2026 AeroShield PVC Blinds. Engineered for Strength, Cut for Perfection.
+        </div>
+    </footer>
+
+    <script>
+        function updateThemeUI() {
+            const moonIcon = document.getElementById('theme-icon-moon');
+            const sunIcon = document.getElementById('theme-icon-sun');
+            if (document.documentElement.classList.contains('dark')) {
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+        
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeUI();
+        }
+        
+        // Initial sync
+        updateThemeUI();
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
